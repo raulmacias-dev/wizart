@@ -76,6 +76,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_launcher_icons:
+    dependency: "direct dev"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -88,6 +95,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gallery_saver:
+    dependency: "direct main"
+    description:
+      name: gallery_saver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   http:
     dependency: transitive
     description:
@@ -103,7 +117,7 @@ packages:
     source: hosted
     version: "3.1.4"
   image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image
       url: "https://pub.dartlang.org"
@@ -145,7 +159,7 @@ packages:
     source: hosted
     version: "0.12.6"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.dartlang.org"
@@ -159,14 +173,14 @@ packages:
     source: hosted
     version: "0.0.4"
   path:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -324,6 +338,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.6.1"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.1"
 sdks:
   dart: ">=2.7.0 <3.0.0"
   flutter: ">=1.16.0 <2.0.0"
