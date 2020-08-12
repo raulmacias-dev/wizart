@@ -1,206 +1,84 @@
+import 'dart:async';
 
-import 'dart:math';
+import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:wizart/ui/wizart.dart';
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-    .then((_) {
-      runApp(new MyApp());
-    });
+      .then((_) {
+    runApp(new MyApp());
+  });
 }
 
-class MyApp extends StatefulWidget {
-
-  static final style = TextStyle(
-    fontSize: 30,
-    fontFamily: "Billy",
-    fontWeight: FontWeight.w600,
-  );
+class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  int page = 0;
-
-
-  UpdateType updateType;
-
-  @override
-  void initState() { 
-    super.initState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Wizart',
+      theme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      home: WelcomeScreen(),
+    );
   }
+}
 
-  final pages = [
-    Container(
-      color: Colors.deepPurpleAccent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Image.asset(
-            'assets/1.png',
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-          ),
-          Column(
-            children: <Widget>[
-              Text(
-                "Hola",
-                style: MyApp.style,
-              ),
-              Text(
-                "Wizards",
-                style: MyApp.style,
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-    Container(
-      color: Colors.greenAccent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Image.asset(
-            'assets/1.png',
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-          ),
-          Column(
-            children: <Widget>[
-              Text(
-                "Buscáis algo fresco?",
-                style: MyApp.style,
-              ),
-              Text(
-                "WizArt está aquí!",
-                style: MyApp.style,
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-    Container(
-      color: Colors.pinkAccent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Image.asset(
-            'assets/1.png',
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-          ),
-          Column(
-            children: <Widget>[
-              Text(
-                "Cargando",
-                style: MyApp.style,
-              ),
-              Text(
-                "_ WizArt _",
-                style: MyApp.style,
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  ];
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({Key key}) : super(key: key);
 
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
 
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  var _style = TextStyle(
+      fontSize: 40,
+      fontFamily: "Billy",
+      fontWeight: FontWeight.w500,
+      color: Colors.white);
 
-  Widget _buildDot(int index) {
-    double selectedness = Curves.easeOut.transform(
-      max(
-        0.0,
-        1.0 - ((page ?? 0) - index).abs(),
-      ),
-    );
-    double zoom = 1.0 + (2.0 - 1.0) * selectedness;
-    return new Container(
-      width: 25.0,
-      child: new Center(
-        child: new Material(
-          color: Colors.white,
-          type: MaterialType.circle,
-          child: new Container(
-            width: 8.0 * zoom,
-            height: 8.0 * zoom,
-          ),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            page < 2?
-            Stack(children: <Widget>[
-              LiquidSwipe(
-              pages: pages,
-              fullTransitionValue: 200,
-              enableSlideIcon: false,
-              enableLoop: true,
-              positionSlideIcon: 0.0,
-              onPageChangeCallback: pageChangeCallback,
-              currentUpdateTypeCallback: updateTypeCallback,
-              waveType: WaveType.liquidReveal,),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: <Widget>[
-                  Expanded(child: SizedBox()),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List<Widget>.generate(3, _buildDot),
-                  ),
-                ],
-              ),
+    var _size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          SplashScreen.callback(
+            name: "assets/loader.flr",
+            onSuccess: (_) {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => WizartPage(),
+              ));
+            },
+            onError: (e, s) {},
+            height: _size.height,
+            startAnimation: '0',
+            endAnimation: '4',
+            loopAnimation: 'Untitled',
+            //backgroundColor: Colors.white,
+            until: () => Future.delayed(Duration(milliseconds: 4)),
+          ),
+          Center(
+              child: Container(
+            padding: EdgeInsets.only(top: _size.height * 0.1),
+            child: Text(
+              'WizArT',
+              style: _style,
             ),
-            ],
-            ): WizartPage(),
-            
-          ],
-        ),
+          )),
+        ],
       ),
     );
   }
-
-  pageChangeCallback(int lpage) {
-    print(lpage);
-    setState(() {
-      page = lpage;
-    });
-  }
-
-  updateTypeCallback(UpdateType updateType) {
-    print(updateType);
-  }
-
 }

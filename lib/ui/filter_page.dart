@@ -11,7 +11,7 @@ import 'package:photofilters/filters/filters.dart';
 ///The PhotoFilterSelector Widget for apply filter from a selected set of filters
 class FilterPage extends StatefulWidget {
   final Widget title;
-  final Color appBarColor;
+  //final Color appBarColor;
   final List<Filter> filters;
   final imageLib.Image image;
   final Widget loader;
@@ -24,9 +24,9 @@ class FilterPage extends StatefulWidget {
     @required this.title,
     @required this.filters,
     @required this.image,
-    this.appBarColor = Colors.green,
+    //this.appBarColor = Colors.white,
     this.loader = const Center(child: CircularProgressIndicator()),
-    this.fit = BoxFit.fill,
+    this.fit = BoxFit.cover,
     @required this.filename,
     this.circleShape = false,
   }) : super(key: key);
@@ -40,7 +40,7 @@ class _FilterPage extends State<FilterPage> {
       fontSize: 30,
       fontFamily: "Billy",
       fontWeight: FontWeight.w600,
-      color: Colors.black);
+      color: Colors.white);
 
   String filename;
   Map<String, List<int>> cachedFilters = {};
@@ -67,13 +67,13 @@ class _FilterPage extends State<FilterPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             'Wizart',
             style: style,
           ),
           textTheme: TextTheme(headline2: style),
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
           actions: <Widget>[
             loading
                 ? Container()
@@ -91,94 +91,61 @@ class _FilterPage extends State<FilterPage> {
           ],
         ),
         body: Container(
-          width: double.infinity,
-          height: double.infinity,
           child: loading
               ? widget.loader
               : Container(
-                  constraints: BoxConstraints.expand(),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: AssetImage('assets/1.png'),
-                    fit: BoxFit.cover,
-                  )),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                        
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                padding: EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(_filter?.name),
-                                    Card(
-                                      semanticContainer: true,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Container(
+                            padding: EdgeInsets.all(15.0),
+                            child:
+                                _buildFilteredImage(_filter, image, filename)),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: widget.filters.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return InkWell(
+                                child: Container(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            //color: Colors.white,
+                                            shape: BoxShape.circle),
+                                        padding: EdgeInsets.all(2),
+                                        child: _buildFilterThumbnail(
+                                            widget.filters[index],
+                                            image,
+                                            filename),
                                       ),
-                                      elevation: 5,
-                                      margin: EdgeInsets.all(5),
-                                      child: _buildFilteredImage(
-                                        _filter,
-                                        image,
-                                        filename,
+                                      SizedBox(
+                                        height: 5.0,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: widget.filters.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return InkWell(
-                                  child: Container(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              color:Colors.white,
-                                              shape: BoxShape.circle),
-                                          padding: EdgeInsets.all(2),
-                                          child: _buildFilterThumbnail(
-                                              widget.filters[index],
-                                              image,
-                                              filename),
-                                        ),
-                                        SizedBox(
-                                          height: 5.0,
-                                        ),
-                                        Text(
-                                          widget.filters[index].name,
-                                        )
-                                      ],
-                                    ),
+                                      Text(
+                                        widget.filters[index].name,
+                                      )
+                                    ],
                                   ),
-                                  onTap: () => setState(() {
-                                    _filter = widget.filters[index];
-                                  }),
-                                );
-                              },
-                            ),
+                                ),
+                                onTap: () => setState(() {
+                                  _filter = widget.filters[index];
+                                }),
+                              );
+                            },
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
         ),
@@ -204,7 +171,7 @@ class _FilterPage extends State<FilterPage> {
                 child: Center(
                   child: widget.loader,
                 ),
-                backgroundColor: Colors.white,
+                //backgroundColor: Colors.white,
               );
             case ConnectionState.done:
               if (snapshot.hasError)
@@ -215,7 +182,7 @@ class _FilterPage extends State<FilterPage> {
                 backgroundImage: MemoryImage(
                   snapshot.data,
                 ),
-                backgroundColor: Colors.white,
+                //backgroundColor: Colors.white,
               );
           }
           return null; // unreachable
@@ -227,7 +194,7 @@ class _FilterPage extends State<FilterPage> {
         backgroundImage: MemoryImage(
           cachedFilters[filter?.name ?? "_"],
         ),
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
       );
     }
   }
@@ -284,7 +251,7 @@ class _FilterPage extends State<FilterPage> {
                     )
                   : Image.memory(
                       snapshot.data,
-                      fit: BoxFit.contain,
+                      fit: widget.fit,
                     );
           }
           return null; // unreachable
