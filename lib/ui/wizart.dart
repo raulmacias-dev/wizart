@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path/path.dart';
@@ -12,6 +13,7 @@ import 'package:wizart/filters/martha_filter.dart';
 import 'package:wizart/filters/wizard_filter.dart';
 import 'package:wizart/ui/filter_page.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:wizart/ui/top_bar.dart';
 
 class WizartPage extends StatefulWidget {
   WizartPage({Key key}) : super(key: key);
@@ -70,7 +72,7 @@ class _WizartPageState extends State<WizartPage> {
     return SpeedDial(
       animatedIcon: AnimatedIcons.menu_close,
       animatedIconTheme: IconThemeData(size: 22),
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: Colors.white,
       visible: true,
       curve: Curves.bounceIn,
       children: [
@@ -84,14 +86,17 @@ class _WizartPageState extends State<WizartPage> {
                 showDialog(
                     context: context,
                     builder: (_) => AssetGiffyDialog(
-                          image: Image.asset('assets/save.gif'),
+                          image: Image.asset(
+                            'assets/save.gif',
+                            fit: BoxFit.cover,
+                          ),
                           title: Text(
-                            'ALRIGHT !!!',
+                            'Yuuujuu!',
                             style: TextStyle(
                                 fontSize: 22.0, fontWeight: FontWeight.w600),
                           ),
                           description: Text(
-                            'Fichero guardado en carrete ...',
+                            'guardado en carrete ...',
                             textAlign: TextAlign.center,
                             style: TextStyle(),
                           ),
@@ -108,14 +113,17 @@ class _WizartPageState extends State<WizartPage> {
                 showDialog(
                     context: context,
                     builder: (_) => AssetGiffyDialog(
-                          image: Image.asset('assets/no-save.gif'),
+                          image: Image.asset(
+                            'assets/no-save.gif',
+                            fit: BoxFit.cover,
+                          ),
                           title: Text(
-                            'WHAT !!!',
+                            'Hum…',
                             style: TextStyle(
                                 fontSize: 22.0, fontWeight: FontWeight.w600),
                           ),
                           description: Text(
-                            'No hay nada que salvar ...',
+                            'no hay nada que guardar !',
                             textAlign: TextAlign.center,
                             style: TextStyle(),
                           ),
@@ -130,7 +138,7 @@ class _WizartPageState extends State<WizartPage> {
                         ));
               }
             },
-            label: 'Save',
+            label: 'Guardar Diseño',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
@@ -138,14 +146,14 @@ class _WizartPageState extends State<WizartPage> {
             labelBackgroundColor: Colors.greenAccent),
         // FAB 2
         SpeedDialChild(
-            child: Icon(Icons.get_app),
+            child: Icon(Icons.archive),
             backgroundColor: Colors.blue,
             onTap: () {
               setState(() {
                 getImage(context);
               });
             },
-            label: 'Load',
+            label: 'Seleccionar Imagen',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
@@ -156,9 +164,10 @@ class _WizartPageState extends State<WizartPage> {
             child: Icon(Icons.exit_to_app),
             backgroundColor: Colors.red,
             onTap: () {
+              SystemNavigator.pop();
               setState(() {});
             },
-            label: 'Exit App',
+            label: 'Salir',
             labelStyle: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
@@ -172,52 +181,57 @@ class _WizartPageState extends State<WizartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.04),
-          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.04),
-          constraints: BoxConstraints.expand(),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                imageFile == null
-                    ? Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: Image.asset(
-                          'assets/image-placeholder-vertical.jpg',
-                          fit: BoxFit.contain,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                      )
-                    : Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: Image.file(
-                          imageFile,
-                          fit: BoxFit.fill,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        elevation: 5,
-                        margin: EdgeInsets.all(5),
-                      ),
-              ],
+      body: Stack(
+        children: <Widget>[
+          TopBar(),
+          Center(
+            child: Container(
+              margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.04),
+              padding:
+                  EdgeInsets.all(MediaQuery.of(context).size.height * 0.04),
+              constraints: BoxConstraints.expand(),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    imageFile == null
+                        ? Card(
+                            semanticContainer: true,
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: Image.asset(
+                              'assets/image-placeholder-vertical.jpg',
+                              fit: BoxFit.contain,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            margin: EdgeInsets.all(10),
+                          )
+                        : Card(
+                            semanticContainer: true,
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: Image.file(
+                              imageFile,
+                              fit: BoxFit.fill,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            margin: EdgeInsets.all(5),
+                          ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
       floatingActionButton: _getFAB(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

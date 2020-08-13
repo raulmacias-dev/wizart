@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:path_provider/path_provider.dart';
 import 'package:photofilters/filters/filters.dart';
+import 'package:wizart/ui/top_bar.dart';
 
 ///The PhotoFilterSelector Widget for apply filter from a selected set of filters
 class FilterPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class FilterPage extends StatefulWidget {
 class _FilterPage extends State<FilterPage> {
   static final style = TextStyle(
       fontSize: 30,
-      fontFamily: "Billy",
+      fontFamily: "Federika",
       fontWeight: FontWeight.w600,
       color: Colors.white);
 
@@ -94,57 +95,64 @@ class _FilterPage extends State<FilterPage> {
           child: loading
               ? widget.loader
               : Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        flex: 6,
-                        child: Container(
-                            padding: EdgeInsets.all(15.0),
-                            child:
-                                _buildFilteredImage(_filter, image, filename)),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: widget.filters.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return InkWell(
-                                child: Container(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            //color: Colors.white,
-                                            shape: BoxShape.circle),
-                                        padding: EdgeInsets.all(2),
-                                        child: _buildFilterThumbnail(
-                                            widget.filters[index],
-                                            image,
-                                            filename),
+                  child: Stack(
+                    children: <Widget>[
+                      TopBar(),
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            Center(
+                              child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: _buildFilteredImage(
+                                      _filter, image, filename)),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              color: Colors.transparent,
+                              alignment: Alignment.bottomRight,
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: widget.filters.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                //color: Colors.white,
+                                                shape: BoxShape.circle),
+                                            padding: EdgeInsets.all(2),
+                                            child: _buildFilterThumbnail(
+                                                widget.filters[index],
+                                                image,
+                                                filename),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Text(
+                                            widget.filters[index].name,
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        widget.filters[index].name,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                onTap: () => setState(() {
-                                  _filter = widget.filters[index];
-                                }),
-                              );
-                            },
-                          ),
+                                    ),
+                                    onTap: () => setState(() {
+                                      _filter = widget.filters[index];
+                                    }),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -167,22 +175,22 @@ class _FilterPage extends State<FilterPage> {
             case ConnectionState.active:
             case ConnectionState.waiting:
               return CircleAvatar(
-                radius: 50.0,
+                backgroundColor: Colors.transparent,
+                radius: 40.0,
                 child: Center(
                   child: widget.loader,
                 ),
-                //backgroundColor: Colors.white,
               );
             case ConnectionState.done:
               if (snapshot.hasError)
                 return Center(child: Text('Error: ${snapshot.error}'));
               cachedFilters[filter?.name ?? "_"] = snapshot.data;
               return CircleAvatar(
-                radius: 50.0,
+                backgroundColor: Colors.transparent,
+                radius: 30.0,
                 backgroundImage: MemoryImage(
                   snapshot.data,
                 ),
-                //backgroundColor: Colors.white,
               );
           }
           return null; // unreachable
@@ -190,11 +198,11 @@ class _FilterPage extends State<FilterPage> {
       );
     } else {
       return CircleAvatar(
-        radius: 50.0,
+        backgroundColor: Colors.transparent,
+        radius: 30.0,
         backgroundImage: MemoryImage(
           cachedFilters[filter?.name ?? "_"],
         ),
-        //backgroundColor: Colors.white,
       );
     }
   }
